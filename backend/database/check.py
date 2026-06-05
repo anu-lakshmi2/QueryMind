@@ -27,4 +27,14 @@ cursor.execute("""
 for row in cursor.fetchall():
     print(row)
 
+
+print("\n--- STUDENTS WITH GPA GREATER THAN 8 ---")
+cursor.execute("""
+    SELECT students.name, students.gpa, departments.name
+    FROM students join departments on students.department_id = departments.id
+    WHERE students.gpa > 8 AND departments.name = 'Computer Science'
+""")
+for row in cursor.fetchall():
+    print(row)
+
 conn.close()
