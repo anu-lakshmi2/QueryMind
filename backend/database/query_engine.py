@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from backend.database.db import execute_query, execute_write
 
-ALLOWED_TABLES = {"students", "courses", "departments", "professors", "enrollments"}
+ALLOWED_TABLES = ["students", "courses", "departments", "professors", "enrollments"]
 
 ALLOWED_KEYWORDS = {"SELECT", "FROM", "WHERE", "JOIN", "ON", "AND", "OR",
                     "ORDER", "BY", "GROUP", "HAVING", "LIMIT", "INNER",

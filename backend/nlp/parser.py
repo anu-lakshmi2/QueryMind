@@ -48,11 +48,16 @@ def detect_tables(text):
     text_lower = text.lower()
     schema = get_schema_info()
     found_tables = []
+
     for table in schema.keys():
-        # Check singular too — "student" should match "students"
         if table in text_lower or table.rstrip('s') in text_lower:
-            found_tables.append(table)
-    return found_tables if found_tables else ["students"]  # default
+            position = text_lower.find(table.rstrip('s'))
+            found_tables.append((position, table))
+
+    found_tables.sort(key=lambda x: x[0])  # sort by position in sentence
+    result = [t for _, t in found_tables]
+
+    return result if result else ["students"]
 
 def detect_columns(text, tables):
     text_lower = text.lower()
@@ -74,6 +79,26 @@ def detect_columns(text, tables):
                         found_columns.append((table, real_col))
 
     return found_columns
+
+def detect_text_match(text, tables):
+    """Detects literal text values like department names, course names, grades."""
+    text_lower = text.lower()
+    schema = get_schema_info()
+    matches = []
+
+    # Known department names — in a bigger system, this would query the DB directly
+    known_departments = ["computer science", "mathematics", "electronics", "physics"]
+
+    for dept in known_departments:
+        if dept in text_lower:
+            matches.append({
+                "table": "departments",
+                "column": "name",
+                "operator": "=",
+                "value": dept.title()
+            })
+
+    return matches
 
 def detect_conditions(text):
     text_lower = text.lower()
@@ -98,12 +123,14 @@ def parse_query(text):
     tables = detect_tables(text)
     columns = detect_columns(text, tables)
     conditions = detect_conditions(text)
+    text_matches = detect_text_match(text, tables)
 
     return {
         "intent": intent,
         "tables": tables,
         "columns": columns,
         "conditions": conditions,
+        "text_matches": text_matches,
         "original": text
     }
 
@@ -112,29 +139,38 @@ def build_sql(parsed):
     tables = parsed['tables']
     columns = parsed['columns']
     conditions = parsed['conditions']
+    text_matches = parsed.get('text_matches', [])
 
     if not tables:
         return None, "Could not identify any table from your query."
 
-    # Build SELECT clause
-    if columns:
-        col_str = ", ".join([f"{t}.{c}" for t, c in columns])
-        select_clause = f"SELECT {col_str}, {tables[0]}.name"
-    else:
-        select_clause = f"SELECT {tables[0]}.*"
-
-    # Build FROM clause
-    from_clause = f"FROM {tables[0]}"
-
-    # Build WHERE clause
+    main_table = tables[0]
+    join_clause = ""
     where_parts = []
+
+    # Handle text matches (like department name) — may need a JOIN
+    for match in text_matches:
+        if match['table'] != main_table:
+            join_clause = f"JOIN {match['table']} ON {main_table}.{match['table'][:-1]}_id = {match['table']}.id"
+        where_parts.append(f"{match['table']}.{match['column']} {match['operator']} '{match['value']}'")
+
+    # Handle numeric conditions
     for condition in conditions:
         for table, col in columns:
             where_parts.append(f"{table}.{col} {condition['operator']} {condition['value']}")
 
+    # Build SELECT clause
+    if columns:
+        col_str = ", ".join([f"{t}.{c}" for t, c in columns])
+        select_clause = f"SELECT {col_str}, {main_table}.name"
+    else:
+        select_clause = f"SELECT {main_table}.name" if (join_clause or where_parts) else f"SELECT {main_table}.*"
+
+    from_clause = f"FROM {main_table}"
     where_clause = "WHERE " + " AND ".join(where_parts) if where_parts else ""
 
-    sql = f"{select_clause} {from_clause} {where_clause}".strip()
+    sql = f"{select_clause} {from_clause} {join_clause} {where_clause}".strip()
+    sql = " ".join(sql.split())  # clean up extra spaces
     return sql, None
 
 def natural_language_query(text):
@@ -158,15 +194,14 @@ def natural_language_query(text):
 
 if __name__ == "__main__":
     test_sentences = [
-        "show me all students with gpa greater than 8",
-        "list all courses",
-        "find students with gpa less than 7",
-        "show all professors",
+        "show students in Computer Science department",
+"list students with age above 20",
     ]
 
     for sentence in test_sentences:
         print(f"\nInput: '{sentence}'")
         result = natural_language_query(sentence)
+        print(f"  Tables detected: {parse_query(sentence)['tables']}")
         print(f"  SQL     : {result['sql']}")
         print(f"  Success : {result['success']}")
         print(f"  Count   : {result['count']}")
