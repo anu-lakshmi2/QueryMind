@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QueryMind</title>
+    <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="logo">QueryMind</div>
+        <div class="account">👤</div>
+    </div>
+
+    <div class="container">
+        <h1>What do you want to know about this database?</h1>
+
+        <div class="search-box">
+            <input type="text" id="queryInput" placeholder="Type your question here...">
+            <button id="submitBtn">➤</button>
+        </div>
+
+        <div id="resultsSection" class="results-section hidden">
+
+            <div class="results-left">
+                <div class="results-header">
+                    <h3>Results</h3>
+                    <button id="downloadBtn" title="Download CSV">⬇</button>
+                </div>
+                <table id="resultsTable"></table>
+            </div>
+
+            <div class="results-right">
+                <h3>Generated SQL</h3>
+                <pre id="sqlBox"></pre>
+            </div>
+
+        </div>
+
+        <div id="explanationSection" class="explanation hidden">
+            <h3>How this works</h3>
+            <p id="explanationText"></p>
+        </div>
+
+        <div id="errorBox" class="error hidden"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

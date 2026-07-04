@@ -20,6 +20,7 @@ OPERATOR_MAP = {
     "below": "<",
     "lower than": "<",
     "equal to": "=",
+    "with": "=",
     "equals": "=",
     "is": "=",
     "not equal to": "!=",
@@ -115,8 +116,18 @@ def detect_conditions(text):
                     "operator": operator,
                     "value": value
                 })
+                # Handle bare numbers — "students with cgpa 9" or "students cgpa 9"
+    # If a column was mentioned and a number exists nearby, assume "="
+    bare_number = re.search(r'\b(\d+\.?\d*)\b', text_lower)
+    if bare_number and not conditions:
+        # Only add if no condition was already found
+        conditions.append({
+            "operator": "=",
+            "value": bare_number.group(1)
+        })
 
     return conditions
+
 
 def parse_query(text):
     intent = detect_intent(text)
@@ -175,6 +186,21 @@ def build_sql(parsed):
 
 def natural_language_query(text):
     parsed = parse_query(text)
+    
+    # Check if we actually understood anything meaningful
+    has_real_table = any(t in text.lower() or t.rstrip('s') in text.lower() for t in parsed['tables'])
+    has_signal = parsed['columns'] or parsed['conditions'] or parsed['text_matches']
+    
+    if not has_real_table and not has_signal:
+        return {
+            "success": False,
+            "error": "I couldn't understand that question. Try mentioning a table like students, courses, or professors, with a clear condition.",
+            "sql": None,
+            "rows": [],
+            "count": 0,
+            "parsed": parsed
+        }
+    
     sql, error = build_sql(parsed)
 
     if error:
