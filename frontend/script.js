@@ -107,12 +107,15 @@ async function handleSubmit() {
     explanationSection.classList.add("hidden");
 
     const data = await runQuery(text);
+    console.log("Success:", data.success, "Error:", data.error);
 
     if (!data.success) {
-        errorBox.textContent = data.error || "Something went wrong.";
-        errorBox.classList.remove("hidden");
-        return;
-    }
+    errorBox.textContent = data.error || "Something went wrong.";
+    errorBox.classList.remove("hidden");
+    resultsSection.classList.add("hidden");
+    explanationSection.classList.add("hidden");
+    return;
+}
     document.getElementById("heroImage").classList.add("slide-up");
     lastResults = data.rows;
     addToHistory(text);
