@@ -85,12 +85,24 @@ function downloadCSV(rows) {
     URL.revokeObjectURL(url);
 }
 
+function formatSQL(sql) {
+    const keywords = ["SELECT", "FROM", "JOIN", "ON", "WHERE", "AND", "OR", 
+                      "ORDER BY", "GROUP BY", "HAVING", "LIMIT"];
+    let formatted = sql;
+    keywords.forEach(keyword => {
+        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+        formatted = formatted.replace(regex, `\n${keyword}`);
+    });
+    return formatted.trim();
+}
 
 async function handleSubmit() {
     const text = queryInput.value.trim();
     if (text === "") return;
 
     errorBox.classList.add("hidden");
+    // Animate hero image out
+    document.getElementById("heroImage").classList.add("slide-up");
     resultsSection.classList.add("hidden");
     explanationSection.classList.add("hidden");
 
@@ -101,10 +113,11 @@ async function handleSubmit() {
         errorBox.classList.remove("hidden");
         return;
     }
-
+    document.getElementById("heroImage").classList.add("slide-up");
     lastResults = data.rows;
+    addToHistory(text);
     renderTable(data.rows);
-    sqlBox.textContent = data.sql;
+    sqlBox.textContent = formatSQL(data.sql);
     explanationText.textContent = buildExplanation(data.parsed, data.sql);
 
     resultsSection.classList.remove("hidden");
@@ -121,3 +134,43 @@ queryInput.addEventListener("keypress", function(e) {
 
 
 downloadBtn.addEventListener("click", () => downloadCSV(lastResults));
+
+const historyList = document.getElementById("historyList");
+const historySearch = document.getElementById("historySearch");
+const newChatBtn = document.getElementById("newChatBtn");
+
+let queryHistory = [];
+
+function addToHistory(text) {
+    queryHistory.unshift(text);  // add to top
+    renderHistory(queryHistory);
+}
+
+function renderHistory(items) {
+    historyList.innerHTML = "";
+    items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.textContent = item;
+        div.addEventListener("click", () => {
+            queryInput.value = item;
+            handleSubmit();
+        });
+        historyList.appendChild(div);
+    });
+}
+
+historySearch.addEventListener("input", () => {
+    const filtered = queryHistory.filter(q =>
+        q.toLowerCase().includes(historySearch.value.toLowerCase())
+    );
+    renderHistory(filtered);
+});
+
+newChatBtn.addEventListener("click", () => {
+    queryInput.value = "";
+    resultsSection.classList.add("hidden");
+    explanationSection.classList.add("hidden");
+    errorBox.classList.add("hidden");
+    document.getElementById("heroImage").classList.remove("slide-up");
+});

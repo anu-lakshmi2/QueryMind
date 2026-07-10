@@ -7,45 +7,67 @@
 </head>
 <body>
 
-    <div class="topbar">
-        <div class="logo">QueryMind</div>
-        <div class="account">👤</div>
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-logo">QueryMind</div>
+            <button id="newChatBtn">+ New Chat</button>
+        </div>
+        <div class="sidebar-section">
+            <input type="text" id="historySearch" placeholder="Search history...">
+        </div>
+        <div class="sidebar-label">History</div>
+        <div id="historyList" class="history-list"></div>
     </div>
 
-    <div class="container">
-        <h1>What do you want to know about this database?</h1>
+    <!-- MAIN AREA -->
+    <div class="main-area">
 
-        <div class="search-box">
-            <input type="text" id="queryInput" placeholder="Type your question here...">
-            <button id="submitBtn">➤</button>
+        <div class="topbar">
+            <div></div>
+            <div class="account">👤</div>
         </div>
 
-        <div id="resultsSection" class="results-section hidden">
+        <div class="container">
+            <h1>What do you want to know about this database?</h1>
+            <p class="subtitle">Just type it here.</p>
 
-            <div class="results-left">
-                <div class="results-header">
-                    <h3>Results</h3>
-                    <button id="downloadBtn" title="Download CSV">⬇</button>
+            <div class="search-box">
+                <input type="text" id="queryInput" placeholder="e.g. show students with gpa greater than 8">
+                <button id="submitBtn">➤</button>
+            </div>
+
+            <div id="heroImage">
+                <img src="campus.jpg" alt="Campus">
+            </div>
+
+            <div id="resultsSection" class="results-section hidden">
+                <div class="results-left">
+                    <div class="results-header">
+                        <h3>Results</h3>
+                        <button id="downloadBtn" title="Download CSV">⬇</button>
+                    </div>
+                    <table id="resultsTable"></table>
                 </div>
-                <table id="resultsTable"></table>
+                <div class="results-right">
+                    <h3>Generated SQL</h3>
+                    <pre id="sqlBox"></pre>
+                </div>
             </div>
 
-            <div class="results-right">
-                <h3>Generated SQL</h3>
-                <pre id="sqlBox"></pre>
+            <div id="explanationSection" class="explanation hidden">
+                <h3>How this works</h3>
+                <p id="explanationText"></p>
             </div>
 
+            <div id="errorBox" class="error hidden"></div>
+
         </div>
-
-        <div id="explanationSection" class="explanation hidden">
-            <h3>How this works</h3>
-            <p id="explanationText"></p>
-        </div>
-
-        <div id="errorBox" class="error hidden"></div>
-
     </div>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

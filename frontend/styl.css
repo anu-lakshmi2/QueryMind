@@ -133,6 +133,8 @@ table th {
     padding: 20px;
     font-family: 'Courier New', monospace;
     font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .explanation {
@@ -150,4 +152,123 @@ table th {
     padding: 14px 20px;
     border-radius: 8px;
     text-align: left;
+}
+
+#heroImage {
+    margin-top: 40px;
+    border-radius: 16px;
+    overflow: hidden;
+    max-height: 340px;
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+}
+
+#heroImage img {
+    width: 100%;
+    object-fit: cover;
+    max-height: 340px;
+    border-radius: 16px;
+    display: block;
+}
+
+#heroImage.slide-up {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 240px;
+    background: #1a1a2e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #7b9fff;
+    margin-bottom: 8px;
+}
+
+#newChatBtn {
+    background: #2b59ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+}
+
+#newChatBtn:hover {
+    background: #1b3fcc;
+}
+
+#historySearch {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #2a2a3e;
+    color: white;
+    font-size: 13px;
+    outline: none;
+}
+
+.sidebar-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 1px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.history-item {
+    background: #2a2a3e;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-item:hover {
+    background: #3a3a5e;
+    color: white;
+}
+
+.main-area {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.subtitle {
+    color: #888;
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-size: 15px;
 }
