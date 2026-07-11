@@ -132,6 +132,7 @@ python tests/test_queries.py
 
 ## Project Structure
 
+```
 QueryMind/
 ├── backend/
 │   ├── database/
@@ -149,5 +150,6 @@ QueryMind/
 ├── tests/
 │   └── test_queries.py
 └── README.md
+```
 
 ---
