@@ -5,8 +5,7 @@ QueryMind lets you query a database using plain English.
 Type "show students with GPA greater than 8" and get real results instantly — 
 no SQL knowledge required.
 
-**Live Demo:** [coming soon after deployment]  
-**Built by:** Anulakshmi | [github.com/anu-lakshmi2](https://github.com/anu-lakshmi2)
+**Live Demo:** [https://query-mind-b7ol.onrender.com](https://query-mind-b7ol.onrender.com)**Built by:** Anulakshmi | [github.com/anu-lakshmi2](https://github.com/anu-lakshmi2)
 
 ---
 
