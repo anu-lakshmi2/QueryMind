@@ -1,0 +1,1 @@
+window.API_URL = "https://query-mind-b7ol.onrender.com";
