@@ -12,8 +12,7 @@ let lastResults = [];  // we'll store the latest results here for CSV download
 
 async function runQuery(text) {
     try {
-        const response = await fetch("http://127.0.0.1:8000/query", {
-            method: "POST",
+        const response = await fetch("https://query-mind-b7ol.onrender.com/query", {            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
